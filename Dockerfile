@@ -20,4 +20,4 @@ EXPOSE 80
 ENV PYTHONPATH=/app
 
 # Run with uv run
-CMD ["uv", "run", "uvicorn", "llm_proxy.main:create_app", "--host", "0.0.0.0", "--port", "80"] 
+CMD ["uv", "run", "uvicorn", "llm_proxy:create_app", "--factory", "--host", "0.0.0.0", "--port", "8000"] 
