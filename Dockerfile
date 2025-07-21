@@ -19,5 +19,5 @@ EXPOSE 80
 # Set environment variable for uvicorn
 ENV PYTHONPATH=/app
 
-# Run with uvicorn CLI
-CMD ["uvicorn", "llm_proxy.main:create_app", "--host", "0.0.0.0", "--port", "80"] 
+# Run with uv run
+CMD ["uv", "run", "uvicorn", "llm_proxy.main:create_app", "--host", "0.0.0.0", "--port", "80"] 
