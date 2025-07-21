@@ -5,15 +5,13 @@ Entry point for running the LLM proxy as a module.
 import os
 import uvicorn
 from .main import create_app
+from .exceptions import LLMForwardConfigError
 
 def main():
     """Run the LLM proxy server."""
     # Check for required environment variable
     if not os.environ.get("OPENAI_API_KEY"):
-        print("Error: OPENAI_API_KEY environment variable not set")
-        print("Please set your OpenAI API key:")
-        print("export OPENAI_API_KEY=your-api-key-here")
-        return
+        raise LLMForwardConfigError("OPENAI_API_KEY environment variable not set. Please set your OpenAI API key.")
     
     # Create the FastAPI app
     app = create_app()
