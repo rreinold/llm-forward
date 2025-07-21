@@ -2,14 +2,13 @@
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-A lightweight, production-ready proxy for OpenAI's API built with FastAPI and Pydantic. Deploy as a Docker container to add authentication, rate limiting, and request/response processing to your LLM applications.
+A lightweight, production-ready proxy for OpenAI's API built with FastAPI and Pydantic. Deploy as a Docker container to add authentication and assistants support.
 
 ## Features
 
 - **🚀 FastAPI-based**: High-performance async web server
 - **🔐 Authentication**: Secure API key management
 - **🐳 Docker Ready**: Production-ready containerization
-- **✅ Type Safety**: Full Pydantic validation and type hints
 
 ## Quick Start with Docker
 
@@ -97,20 +96,6 @@ docker run -d \
   -p 80:80 \
   -e OPENAI_API_KEY=your-api-key \
   llm-proxy:latest
-```
-
-### Docker Compose
-
-```yaml
-version: '3.8'
-services:
-  llm-proxy:
-    build: .
-    ports:
-      - "80:80"
-    environment:
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
-    restart: unless-stopped
 ```
 
 ## Development
@@ -211,7 +196,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 1. **Set environment variables:**
    ```bash
    export OPENAI_API_KEY=sk-...  # your OpenAI API key
-   export OAI_ASSISTANT_ID=asst_JF0fe2OdKnFHicJGqQ68RNbt
+   export OAI_ASSISTANT_ID=asst_lala
    ```
 
 2. **Run the proxy:**
@@ -221,7 +206,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 3. **POST to the assistant endpoint:**
    ```bash
-   curl -X POST http://localhost:8000/v1/assistants/asst_JF0fe2OdKnFHicJGqQ68RNbt/messages \
+   curl -X POST http://localhost:8000/v1/assistants/asst_lala/messages \
      -H "Content-Type: application/json" \
      -d '{"messages":[{"role":"user","content":"Can you suggest a recipe for dinner?"}]}'
    ```
