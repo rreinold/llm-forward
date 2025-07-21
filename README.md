@@ -205,3 +205,25 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Built with [FastAPI](https://fastapi.tiangolo.com/) for high-performance web APIs
 - Uses [Pydantic](https://github.com/pydantic/pydantic) for data validation
 - Inspired by the need for simple, production-ready LLM proxies
+
+## OpenAI Assistants Proxy (Concise Usage)
+
+1. **Set environment variables:**
+   ```bash
+   export OPENAI_API_KEY=sk-...  # your OpenAI API key
+   export OAI_ASSISTANT_ID=asst_JF0fe2OdKnFHicJGqQ68RNbt
+   ```
+
+2. **Run the proxy:**
+   ```bash
+   uv run llm_proxy
+   ```
+
+3. **POST to the assistant endpoint:**
+   ```bash
+   curl -X POST http://localhost:8000/v1/assistants/asst_JF0fe2OdKnFHicJGqQ68RNbt/messages \
+     -H "Content-Type: application/json" \
+     -d '{"messages":[{"role":"user","content":"Can you suggest a recipe for dinner?"}]}'
+   ```
+
+- The proxy will forward requests to the OpenAI Assistants API and return the assistant's response.

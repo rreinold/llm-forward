@@ -6,6 +6,7 @@ class LLMProxySettings(BaseSettings):
     openai_api_key: str = Field(..., env="OPENAI_API_KEY", description="Your OpenAI API key (required).")
     public_access_key: Optional[str] = Field(None, env="LLM_PROXY_PUBLIC_ACCESS_KEY", description="Optional public access key for proxy authentication.")
     oai_assistant_id: Optional[str] = Field(None, env="OAI_ASSISTANT_ID", description="Optional OpenAI Assistant ID for routing requests.")
+    port: int = Field(8000, env="LLM_PROXY_PORT", description="Port for running the proxy server.")
 
     # Optional .env
     class Config:

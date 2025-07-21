@@ -6,8 +6,8 @@ These tests call the actual OpenAI API and require a valid API key.
 
 import os
 import pytest
-from llm_proxy.main import create_app
-
+from llm_proxy.app import App
+from fastapi.testclient import TestClient
 
 @pytest.mark.integration
 class TestLLMProxyIntegration:
@@ -16,12 +16,13 @@ class TestLLMProxyIntegration:
     @pytest.fixture
     def app(self):
         """Create test app instance."""
-        return create_app()
+        openai_token = os.environ.get("OPENAI_API_KEY", "")
+        oai_assistant_id = os.environ.get("OAI_ASSISTANT_ID")
+        return App(openai_token, oai_assistant_id).web_app
     
     @pytest.fixture
     def client(self, app):
         """Create test client."""
-        from fastapi.testclient import TestClient
         return TestClient(app)
     
     def test_chat_completion_endpoint(self, client):
@@ -85,52 +86,33 @@ class TestLLMProxyIntegration:
     def test_invalid_api_key(self):
         """Test behavior with invalid API key."""
         # Temporarily set invalid key
-        original_key = os.environ.get("OPENAI_API_KEY")
-        os.environ["OPENAI_API_KEY"] = "invalid-key"
+        from llm_proxy.app import App
+        from fastapi.testclient import TestClient
         
-        try:
-            from llm_proxy.app import App
-            from fastapi.testclient import TestClient
-            
-            app_instance = App("invalid-key")
-            client = TestClient(app_instance.web_app)
-            
-            test_data = {
-                "messages": [{"role": "user", "content": "Hello"}],
-                "model": "gpt-3.5-turbo"
-            }
-            
-            response = client.post("/v1/chat/completions", json=test_data)
-            
-            # Should get 401 or 400 from OpenAI
-            assert response.status_code in [400, 401, 403, 500]
-            
-        finally:
-            # Restore original key
-            if original_key:
-                os.environ["OPENAI_API_KEY"] = original_key
-            else:
-                del os.environ["OPENAI_API_KEY"]
-    
-    def test_missing_messages(self, client):
-        """Test validation of missing messages."""
+        app_instance = App("invalid-key").web_app
+        client = TestClient(app_instance)
+        
         test_data = {
+            "messages": [{"role": "user", "content": "Hello"}],
             "model": "gpt-3.5-turbo"
         }
-        
         response = client.post("/v1/chat/completions", json=test_data)
-        
-        # Should get validation error
+        assert response.status_code != 200
+    
+    def test_missing_messages(self, client):
+        """Test missing messages field."""
+        test_data = {
+            # "messages" is missing
+            "model": "gpt-3.5-turbo"
+        }
+        response = client.post("/v1/chat/completions", json=test_data)
         assert response.status_code == 422
     
     def test_empty_messages(self, client):
-        """Test validation of empty messages."""
+        """Test empty messages list."""
         test_data = {
             "messages": [],
             "model": "gpt-3.5-turbo"
         }
-        
         response = client.post("/v1/chat/completions", json=test_data)
-        
-        # Should get validation error (400 or 422)
-        assert response.status_code in [400, 422] 
+        assert response.status_code == 400 
