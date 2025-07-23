@@ -8,6 +8,7 @@ import logging
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import List, Dict, Any
+from fastapi.middleware.cors import CORSMiddleware
 
 BASE_OPENAI_URL = "https://api.openai.com"
 
@@ -33,6 +34,15 @@ class App:
         self.oai_assistant_id = oai_assistant_id
         self.forward_url = f"/v1/assistants/{self.oai_assistant_id}/messages" if self.oai_assistant_id else "/v1/chat/completions"
         self.web_app = FastAPI(title="LLM Proxy")
+        # --- Add CORS middleware ---
+        self.web_app.add_middleware(
+            CORSMiddleware,
+            allow_origins=["*"],  # You can restrict this to specific domains
+            allow_credentials=True,
+            allow_methods=["*"],
+            allow_headers=["*"],
+        )
+        # --- End CORS middleware addition ---
         self._setup_routes(self.forward_url)
     
     async def _chat_with_openai(self, request: ChatRequest):
