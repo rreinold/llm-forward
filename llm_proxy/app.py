@@ -105,7 +105,7 @@ class App:
         run_id = run_resp.json()["id"]
 
         # 4. Poll for run completion
-        for _ in range(30):
+        for _ in range(180):
             run_status_resp = await httpx.AsyncClient().get(
                 f"{BASE_OPENAI_URL}/v1/threads/{thread_id}/runs/{run_id}",
                 headers=assistant_headers
